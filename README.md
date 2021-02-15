@@ -12,3 +12,5 @@ Particles can be given 2 vectors; position and velocity (Mass has no current eff
 Velocity is indicated by color. Shows a 2D projection.
 ### Future
 I want to add a GUI for adding layers and better interaction with a 3d space. Currently in the Event-B stage.
+
+![Point source](img/Screenshot 2021-02-15 160707.png)
