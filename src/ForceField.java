@@ -19,7 +19,7 @@ public class ForceField extends Layer{
     @Override
     public Double[] forceAt(Particle particle) {
         Double[] base = super.forceAt(particle);
-        base = Mat.scale(base,(1/(Mat.magnitude(particle.getVelocity())+1)));
+//        base = Mat.scale(base,(1/(Mat.magnitude(particle.getVelocity())+1)));
         return base;
     }
 }

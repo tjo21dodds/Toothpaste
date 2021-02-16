@@ -5,7 +5,7 @@ public class Particle {
     public boolean[] wall;
 
     private final Double restituion = 0.8;
-    private final Double decay = 0.0001;
+    private final Double decay = 0.01;
 
     private Double mass = 1.0;
 
@@ -75,6 +75,7 @@ public class Particle {
         Double[] velocity = new Double[dimensions.length];
         for (int i = 0; i < dimensions.length; i++){
             velocity[i] = (random.nextDouble()-0.5) * maxVelocity;
+//            velocity[i] = 0.0;
         }
         this.wall = new boolean[dimensions.length];
         for (int i = 0; i <dimensions.length; i++){

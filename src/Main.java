@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.io.PrintStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,18 +26,18 @@ public class Main extends Application {
     private ArrayList<Particle> particles = new ArrayList<Particle>();
     private Layer[] layers;
     private Double pWidth = 2.0;
-    private int width = 1000;
-    private int height = 750;
+    private int width = 2000;
+    private int height = 1000;
     private Double[] dims =new Double[]{Double.valueOf(width),Double.valueOf(height)};
     @Override
     public void start(Stage stage) throws Exception {
         this.canvas = new Canvas(width,height);
         this.graphicsContext = canvas.getGraphicsContext2D();
-        layers = new Layer[2];
-        layers[0] = new PointSourceLayer(dims, 0.0006);
-        layers[1] = new ForceField(dims, 0.0001);
-//        layers[2] = new DragLayer(dims, 0.000001);
-        for (int i = 0; i<20000; i++){
+        layers = new Layer[3];
+        layers[0] = new PointSourceLayer(dims, 0.01);
+        layers[1] = new ForceField(dims, 0.0002);
+        layers[2] = new PressureLayer(dims, 0.00005);
+        for (int i = 0; i<10000; i++){
             Particle particle = new Particle(dims, 1.0,pWidth);
             particles.add(particle);
 
@@ -46,16 +47,20 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
                 Long time = new Date().getTime();
+                for (Layer layer: layers){
+                    if (layer instanceof PressureLayer){
+                        PressureLayer pL = ((PressureLayer)layer);
+                        pL.wipeCells();
+                    }
+                }
+                tick();
                 graphicsContext.setFill(Color.BLACK);
                 graphicsContext.fillRect(0,0,width,height);
-
-                tick();
-
-
+                graphicsContext.setFill(Color.WHITE);
                 for (Particle particle: particles){
                     Double[] pos = particle.getPos();
-                    Double velo = Mat.sigmoid(Mat.magnitude(particle.getVelocity()));
-                    graphicsContext.setFill(Color.hsb(Math.pow(velo,8)*255*10, 1.0,1.0));
+//                    Double velo = Mat.sigmoid(Mat.magnitude(particle.getVelocity()));
+//                    graphicsContext.setFill(Color.hsb(Math.pow(velo,8)*255*10, 1.0,1.0));
                     graphicsContext.fillOval(pos[0]-(pWidth*0.5),pos[1]-(pWidth*0.5),pWidth,pWidth);
                 }
                 Long nTime = new Date().getTime();
@@ -95,8 +100,8 @@ public class Main extends Application {
             Thread thread = new Thread(() -> {
                 for (int i = start; i < finalFinish; i++) {
                     Particle particle = particles.get(i);
-                    for (int a = 0; a < 10; a++) {
-                        particle.tick(0.1, dims, layers);
+                    for (int a = 0; a < 5; a++) {
+                        particle.tick(0.5, dims, layers);
 
                     }
 
