@@ -5,9 +5,11 @@ public class Particle {
     public boolean[] wall;
 
     private final Double restituion = 0.8;
-    private final Double decay = 0.01;
+    private final Double decay = 0.1;
+    private final Double entropy = 0.001;
 
-    private Double mass = 1.0;
+    public Double mass = 12.0;
+    private Double density = 1.0;
 
     private Double radius;
 
@@ -31,6 +33,7 @@ public class Particle {
     }
 
     public void tick(Double time, Double[] dimensions, Layer[] layers){
+        this.density = this.density + ((this.mass-this.density)*time*entropy);
         for (int i = 0; i<this.pos.length; i++){
             if (this.pos[i] < -10.0 || this.pos[i] > dimensions[i]+10.0){
                 Random random = new Random();
@@ -53,9 +56,17 @@ public class Particle {
             this.pos[i] = this.pos[i] + (this.velocity[i]*time);
         }
         for (Layer layer: layers){
-            this.velocity = Mat.sum(this.velocity, layer.forceAt(this));
+            layer.apply(this);
         }
         this.velocity = Mat.sum(this.velocity, Mat.negate(Mat.scale(Mat.pow(this.velocity,2.0),decay)));
+    }
+
+    public Double getDensity() {
+        return density;
+    }
+
+    public void setDensity(Double density) {
+        this.density = density;
     }
 
     public Particle(Double[] pos, Double[] velocity, Double radius){

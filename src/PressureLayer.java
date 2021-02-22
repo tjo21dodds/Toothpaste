@@ -47,10 +47,10 @@ public class PressureLayer extends Layer{
                 int[] fPos = pos.clone();
                 fPos[i] = fPos[i] + 1;
                 try {
-                    fVal = fVal + this.cells[this.getCellIndex(fPos)];
+                    fVal = fVal + (((cellNum-a))*this.cells[this.getCellIndex(fPos)]);
                 }
                 catch (Exception e){
-                    fVal = fVal + (fVal/i); //Maintain average
+                    fVal = fVal + ((2*fVal)/i); //Maintain average
                 }
             }
             int nVal = 0;
@@ -58,13 +58,13 @@ public class PressureLayer extends Layer{
                 int[] nPos = pos.clone();
                 nPos[i] = nPos[i] - 1;
                 try {
-                    nVal = nVal + this.cells[this.getCellIndex(nPos)];
+                    nVal = nVal + (((cellNum-a))*this.cells[this.getCellIndex(nPos)]);
                 }
                 catch (Exception e){
-                    nVal = nVal + (nVal/i); //Maintain average
+                    nVal = nVal + ((2*nVal)/i); //Maintain average
                 }
             }
-            vector[i] = (nVal - fVal) * this.strength;
+            vector[i] = ((nVal - fVal)/cellNum) * this.strength;
         }
         incrementCell(pos);
         return vector;

@@ -84,4 +84,7 @@ public class Layer {
     public Double[] forceAt(Particle particle){
         return this.getVector(this.safeSelect(Mat.convert(particle.getPos())));
     }
+    public void apply(Particle particle){
+        particle.setVelocity(Mat.sum(particle.getVelocity(), this.forceAt(particle)));
+    }
 }

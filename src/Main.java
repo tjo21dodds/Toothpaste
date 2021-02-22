@@ -25,8 +25,8 @@ public class Main extends Application {
     private Canvas canvas;
     private ArrayList<Particle> particles = new ArrayList<Particle>();
     private Layer[] layers;
-    private Double pWidth = 2.0;
-    private int width = 2000;
+    private Double pWidth = 4.0;
+    private int width = 500;
     private int height = 1000;
     private Double[] dims =new Double[]{Double.valueOf(width),Double.valueOf(height)};
     @Override
@@ -34,9 +34,9 @@ public class Main extends Application {
         this.canvas = new Canvas(width,height);
         this.graphicsContext = canvas.getGraphicsContext2D();
         layers = new Layer[3];
-        layers[0] = new PointSourceLayer(dims, 0.01);
-        layers[1] = new ForceField(dims, 0.0002);
-        layers[2] = new PressureLayer(dims, 0.00005);
+        layers[0] = new PointSourceLayer(dims, 0.003);
+        layers[1] = new ForceField(dims, 0.001);
+        layers[2] = new PressureLayer(dims, 0.02);
         for (int i = 0; i<10000; i++){
             Particle particle = new Particle(dims, 1.0,pWidth);
             particles.add(particle);
@@ -59,9 +59,14 @@ public class Main extends Application {
                 graphicsContext.setFill(Color.WHITE);
                 for (Particle particle: particles){
                     Double[] pos = particle.getPos();
-//                    Double velo = Mat.sigmoid(Mat.magnitude(particle.getVelocity()));
-//                    graphicsContext.setFill(Color.hsb(Math.pow(velo,8)*255*10, 1.0,1.0));
-                    graphicsContext.fillOval(pos[0]-(pWidth*0.5),pos[1]-(pWidth*0.5),pWidth,pWidth);
+                    Double velo = Mat.sigmoid(Mat.magnitude(particle.getVelocity()));
+                    if (particle.getDensity() != 99.0) {
+                        graphicsContext.setFill(Color.color((particle.mass -particle.getDensity())/particle.mass, 0.0, (particle.getDensity())/ particle.mass));
+                    }
+                    else{
+                        graphicsContext.setFill(Color.WHITE);
+                    }
+                    graphicsContext.fillOval((pos[0]-(pWidth*0.5)),pos[1]-(pWidth*0.5),pWidth,pWidth);
                 }
                 Long nTime = new Date().getTime();
                 System.out.println(nTime - time);
@@ -101,8 +106,7 @@ public class Main extends Application {
                 for (int i = start; i < finalFinish; i++) {
                     Particle particle = particles.get(i);
                     for (int a = 0; a < 5; a++) {
-                        particle.tick(0.5, dims, layers);
-
+                        particle.tick(0.2, dims, layers);
                     }
 
                 }
